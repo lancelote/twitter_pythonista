@@ -1,3 +1,5 @@
+[![Requirements Status](https://requires.io/github/lancelote/twitter_pythonista/requirements.svg?branch=master)](https://requires.io/github/lancelote/twitter_pythonista/requirements/?branch=master)
+
 # twitter_pythonista
 
 Find top Python professionals via Twitter
