@@ -9,4 +9,5 @@ Original idea: [Mark Needham, Python/Neo4j: Finding interesting computer sciency
 ## ToDo
 
 - [ ] Tests
+- [ ] CI
 - [ ] Documentation
