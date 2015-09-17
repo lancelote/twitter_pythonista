@@ -65,3 +65,6 @@ target/
 
 # Vagrant
 .vagrant/
+
+# Twitter app secret data
+secret_data.py
