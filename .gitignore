@@ -67,7 +67,7 @@ target/
 .vagrant/
 
 # Twitter app secret data
-secret_data.py
+src/secret_data.py
 
 # Program data output
 tweet.csv

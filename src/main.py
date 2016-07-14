@@ -6,30 +6,28 @@ import csv
 from collections import Counter, deque
 
 import tweepy
-
 # Secret data from Twitter app
-from secret_data import (
+from src.secret_data import (
     CONSUMER_KEY,
     CONSUMER_SECRET,
     ACCESS_TOKEN,
     ACCESS_TOKEN_SECRET
 )
 
-auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-
-api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-
-counter = Counter()
-users_to_process = deque()
 USERS_TO_PROCESS = 100
 STARTING_USER = "gvanrossum"  # User to start
 
 
+def setup_api():
+    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    api = tweepy.API(
+        auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+    return api
+
+
 def extract_tweet(tweet):
-    """
-    Extract basic information from tweet
-    """
+    """Extract basic information from tweet"""
     user_mentions = ",".join(
         [user["screen_name"] for user in tweet.entities["user_mentions"]]
     )
@@ -43,10 +41,8 @@ def extract_tweet(tweet):
     ]
 
 
-def process_users(writer, tweets):
-    """
-    Processing all mentions users
-    """
+def process_users(api, counter, users_to_process, writer, tweets):
+    """Processing all mentions users"""
     users_processed = {STARTING_USER}
     while True:
         if len(users_processed) >= USERS_TO_PROCESS:
@@ -76,10 +72,8 @@ def process_users(writer, tweets):
                 break
 
 
-def process_user():
-    """
-    Process starting user, launch all user processing, ratings printing
-    """
+def process_user(api, counter, users_to_process):
+    """Process starting user, launch all user processing, ratings printing"""
     with open("tweet.csv", "a") as tweets:
         writer = csv.writer(
             tweets, delimiter=",", escapechar="\\", doublequote=False
@@ -99,7 +93,7 @@ def process_user():
                     break
         print("%s user processing ended" % STARTING_USER)
         print("Mentioned users processing started")
-        process_users(writer, tweets)
+        process_users(api, counter, users_to_process, writer, tweets)
         print("Mentioned users processing ended")
         print()
     print("User popularity:")
@@ -108,6 +102,10 @@ def process_user():
 
 
 def main():
-    process_user()
+    api = setup_api()
+    counter = Counter()
+    users_to_process = deque()
+    process_user(api, counter, users_to_process)
 
-main()
+if __name__ == '__main__':
+    main()
